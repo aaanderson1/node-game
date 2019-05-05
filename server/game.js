@@ -5,6 +5,19 @@ class Position {
     } 
 }
 
+const randomInt = (intMax) => {
+    let randomIndex = Math.floor(Math.random()*intMax);
+    return randomIndex;
+}
+const enemyNames = [
+    "Brutus", "Bad-Dude", "Axel", "Smashman", "Bobbert" 
+];
+let enemyNameIndex = 0;
+const getEnemyName = () => {
+    let randomIndex = randomInt(enemyNames.length);
+    return enemyNames[randomIndex];
+};
+
 class Enemy {
     constructor(id, name, enemyClass, startingPosition) {
 
@@ -98,6 +111,10 @@ class Game {
     constructor() {
         this.players = [];
         this.enemies = [];
+        this.turnOrder = [];
+        this.currentTurn = 0;
+        this.turnStart = 0;
+        this.turnlength = 10;
         this.width = 50; 
         this.height = 50;
         this.grid = [];
@@ -107,11 +124,49 @@ class Game {
         for (let i = 0; i < this.width * this.height; ++i) {
             this.grid.push(0);
         }
+
+        for (let i = 0; i < 5; ++i) {
+            this.enemies.push(this.createEnemy());
+        }
     }
     setGridPosition(pos, value) {
         this.grid[this.width * pos.y + pos.x] = value;
     }
     getGridPosition(pos) {
         return this.grid[this.width * pos.y + pos.x];
+    }
+
+    createEnemy() {
+        const enemyName = getEnemyName();
+        const enemy = new Enemy(0, enemyName, "goblin", this.getValidPosition());
+        return enemy;
+    }
+
+    indexToPosition(index) {
+        let x = index % this.width;
+        let y = (index - x) / this.width;
+        return new Position(x,y);
+    }
+
+    getValidPosition() {
+        let randomIndex = randomInt(this.width*this.height);
+        while (this.getGridPosition(this.indexToPosition(randomIndex)) !== 0) {
+            if (++randomIndex >= this.width * this.height) {
+                randomIndex = 0;
+            }
+        }
+        return this.indexToPosition(randomIndex);
+    }
+
+    addPlayer(player) {
+
+    }
+
+    addEnemy(enemy) {
+
+    }
+
+    update(){
+        
     }
 }
